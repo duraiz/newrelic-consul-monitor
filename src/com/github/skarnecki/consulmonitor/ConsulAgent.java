@@ -19,17 +19,23 @@ public class ConsulAgent extends Agent {
 
     private static final String HTTP = "http";
     private static final String PEERS_URL = "/v1/status/peers";
+    private static final String SERVICES_URL = "/v1/catalog/services";
+    private static final String NODES_URL = "/v1/catalog/nodes";
 
     private String name;
     private URL peersUrl;
+    private URL servicesUrl;
+    private URL nodesUrl;
 
     public ConsulAgent(String name, String host, Integer port) throws ConfigurationException {
         super(GUID, VERSION);
         try {
             this.name = name;
             this.peersUrl = new URL(HTTP, host, port, PEERS_URL);
+            this.servicesUrl = new URL(HTTP, host, port, SERVICES_URL);
+            this.nodesUrl = new URL(HTTP, host, port, NODES_URL);
         } catch (MalformedURLException e) {
-            throw new ConfigurationException("Wikipedia metric URL could not be parsed", e);
+            throw new ConfigurationException("URL could not be parsed", e);
         }
     }
 
@@ -41,15 +47,39 @@ public class ConsulAgent extends Agent {
     @Override
     public void pollCycle() {
         Integer members = getNumberOfMembers();
+        Integer services = getNumberOfServices();
+        Integer nodes = getNumberOfNodes();
         if (members != null) {
-             reportMetric("Articles/Count", "members", members);
-        } else {
-            //TODO: log numArticles when null
+            reportMetric("Articles/Count", "members", members);
+        }
+        if (services != null) {
+            reportMetric("Articles/Count", "services", services);
+        }
+        if (nodes != null) {
+            reportMetric("Articles/Count", "nodes", nodes);
         }
     }
 
     private Integer getNumberOfMembers() {
         JSONObject jsonObj = getJSONResponse(this.peersUrl);
+        if (jsonObj != null) {
+            return jsonObj.size();
+        } else {
+            return null;
+        }
+    }
+
+    private Integer getNumberOfServices() {
+        JSONObject jsonObj = getJSONResponse(this.servicesUrl);
+        if (jsonObj != null) {
+            return jsonObj.size();
+        } else {
+            return null;
+        }
+    }
+
+    private Integer getNumberOfNodes() {
+        JSONObject jsonObj = getJSONResponse(this.nodesUrl);
         if (jsonObj != null) {
             return jsonObj.size();
         } else {
