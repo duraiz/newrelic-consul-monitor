@@ -1,6 +1,6 @@
 {
   "agents": [      {
-      "name" : "",
+      "name" : "Consul - {{key "ENV"}}",
       "host" : "consul.service.consul",
       "port" : 8500
       }]

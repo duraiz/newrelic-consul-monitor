@@ -2,6 +2,8 @@ package com.github.skarnecki.consulmonitor;
 
 import com.newrelic.metrics.publish.Agent;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
+import com.newrelic.metrics.publish.util.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -13,6 +15,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ConsulAgent extends Agent {
+
+    private static final Logger logger = Logger.getLogger(ConsulAgent.class);
 
     private static final String GUID = "com.github.skarnecki.consulmonitor";
     private static final String VERSION = "1.0.0";
@@ -61,7 +65,8 @@ public class ConsulAgent extends Agent {
     }
 
     private Integer getNumberOfMembers() {
-        JSONObject jsonObj = getJSONResponse(this.peersUrl);
+        JSONArray jsonObj = (JSONArray)getJSONResponse(this.peersUrl);
+        logger.debug(new Object[]{jsonObj});
         if (jsonObj != null) {
             return jsonObj.size();
         } else {
@@ -70,7 +75,8 @@ public class ConsulAgent extends Agent {
     }
 
     private Integer getNumberOfServices() {
-        JSONObject jsonObj = getJSONResponse(this.servicesUrl);
+        JSONObject jsonObj = (JSONObject)getJSONResponse(this.servicesUrl);
+        logger.debug(new Object[]{getJSONResponse(this.servicesUrl)});
         if (jsonObj != null) {
             return jsonObj.size();
         } else {
@@ -79,7 +85,8 @@ public class ConsulAgent extends Agent {
     }
 
     private Integer getNumberOfNodes() {
-        JSONObject jsonObj = getJSONResponse(this.nodesUrl);
+        JSONArray jsonObj = (JSONArray)getJSONResponse(this.nodesUrl);
+        logger.debug(new Object[]{jsonObj});
         if (jsonObj != null) {
             return jsonObj.size();
         } else {
@@ -87,7 +94,7 @@ public class ConsulAgent extends Agent {
         }
     }
 
-    private JSONObject getJSONResponse(URL url) {
+    private Object getJSONResponse(URL url) {
         Object response = null;
         InputStream inputStream = null;
         HttpURLConnection connection = null;
@@ -108,7 +115,7 @@ public class ConsulAgent extends Agent {
                 connection.disconnect();
             }
         }
-        return (JSONObject) response;
+        return response;
     }
 
 }

@@ -14,6 +14,7 @@ RUN mv /usr/src/newrelic-consul-monitor/scripts/consul-template.sh /consul-templ
 RUN chmod u+x /consul-template/*
 
 ENV CONSUL_CLUSTER consul.service.consul:8500
-ENV TEMPLATE /usr/src/newrelic-consul-monitor/config/newrelic.json.ctmpl
+ENV TEMPLATE_NR /usr/src/newrelic-consul-monitor/config/newrelic.json.ctmpl
+ENV TEMPLATE_PL /usr/src/newrelic-consul-monitor/config/plugin.json.ctmpl
 ENV COMMAND "java -jar /opt/newrelic_consul_plugin-1.0.0/plugin.jar"
 ENTRYPOINT ["/consul-template/consul-template.sh"]
