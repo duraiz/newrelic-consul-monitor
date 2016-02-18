@@ -3,7 +3,7 @@ FROM java:7
 # Install monitor
 COPY . /usr/src/newrelic-consul-monitor
 RUN cd /opt && tar xvfz /usr/src/newrelic-consul-monitor/dist/newrelic_consul_plugin-1.0.0.tar.gz
-#WORKDIR /opt/newrelic_consul_plugin-1.0.0
+WORKDIR /opt/newrelic_consul_plugin-1.0.0
 
 # Install consul-template
 ADD https://github.com/hashicorp/consul-template/releases/download/v0.7.0/consul-template_0.7.0_linux_amd64.tar.gz /tmp/consul-template.tar.gz
